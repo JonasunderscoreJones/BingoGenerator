@@ -1,2 +1,2 @@
-# jonasjones.dev
- My website at https://jonasjones.dev
+# BingoGenerator Website
+Found at https://bingogenerator.jonasjones.dev/

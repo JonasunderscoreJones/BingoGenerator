@@ -135,7 +135,7 @@ Bingo Item 25`;
   </style>
 
   <div class="bingo-grid-container">
-    <h1>Randomized 5x5 Bingo Generator</h1>
+    <h1>Randomized Bingo Generator</h1>
     <div style="margin-bottom: 10px;">
         <label for="rows">Rows:</label>
         <input id="rows" type="number" bind:value={rows} min="1" max="10" style="width: 50px; margin-right: 10px;" on:input={generateBingo} />

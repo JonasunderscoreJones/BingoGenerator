@@ -272,6 +272,7 @@ Bingo Item 25`;
     <textarea bind:value={inputText} placeholder="Enter items line by line" style="width: 80%; height: 300px; margin-bottom: 10px;" on:input={generateBingo}></textarea>
     <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
     <button on:click={downloadPDF}>Download as PDF</button>
+    <button on:click={generateBingo}>Regenerate Bingo</button>
 
     {#if running_bingo && tried_to_regen}
       <div class="bingo-running-warning">

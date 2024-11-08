@@ -32,20 +32,75 @@ Bingo Item 25`;
     let rows = 5;
     let cols = 5;
     let grid = [];
+    let running_bingo = true;
+    let tried_to_regen = false;
+
+    // Function to save a string as a cookie
+    export function saveEntriesAsCookie(entries, cookieName = 'bingoEntries') {
+      document.cookie = `${cookieName}=${encodeURIComponent(entries)};path=/;max-age=31536000`; // Cookie lasts for 1 year
+    }
+
+    // Function to retrieve a string from a cookie
+    export function getEntriesFromCookie(cookieName = 'bingoEntries') {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [name, value] = cookie.split('=');
+        if (name === cookieName) {
+          return decodeURIComponent(value);
+        }
+      }
+      return null; // Return null if the cookie is not found
+    }
+
+
+    // Function to save the nested list as a cookie
+    export function saveGridAsCookie(grid, cookieName = 'bingoGrid') {
+      const jsonString = JSON.stringify(grid);
+      document.cookie = `${cookieName}=${encodeURIComponent(jsonString)};path=/;max-age=31536000`; // Cookie lasts for 1 year
+    }
+
+    // Function to retrieve the nested list from a cookie
+    export function getGridFromCookie(cookieName = 'bingoGrid') {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [name, value] = cookie.split('=');
+        if (name === cookieName) {
+          try {
+            return JSON.parse(decodeURIComponent(value));
+          } catch (error) {
+            console.error('Error parsing grid from cookie:', error);
+            return null;
+          }
+        }
+      }
+      return null; // Return null if the cookie is not found
+    }
+
 
     function generateBingo() {
+      if (running_bingo) {
+        tried_to_regen = true;
+        return;
+      }
       const inputLines = inputText.split('\n').map(line => line.trim()).filter(Boolean);
       grid = Array(rows * cols).fill('');
       const shuffledLines = [...inputLines].sort(() => Math.random() - 0.5);
       shuffledLines.forEach((line, index) => {
         if (index < grid.length) {
-          grid[index] = line;
+          grid[index] = { value: line, clicked: false };
         }
       });
       grid = Array.from({ length: rows }, (_, rowIndex) =>
         grid.slice(rowIndex * cols, rowIndex * cols + cols)
       );
-      console.log(grid);
+      saveEntriesAsCookie(inputText);
+      saveGridAsCookie(grid);
+    }
+
+    function resetBingo() {
+      running_bingo = false;
+      tried_to_regen = false;
+      generateBingo();
     }
 
     afterUpdate(() => {
@@ -80,7 +135,18 @@ Bingo Item 25`;
     }
 
     onMount(() => {
-      generateBingo();
+      const savedGrid = getGridFromCookie();
+      const savedEntries = getEntriesFromCookie();
+
+      if (savedGrid) {
+        grid = savedGrid;
+        if (savedEntries) {
+          inputText = savedEntries;
+        }
+      } else {
+        running_bingo = false;
+        generateBingo();
+      }
     });
   </script>
 
@@ -116,6 +182,11 @@ Bingo Item 25`;
       border-radius: 4px;
       overflow: hidden;
       word-wrap: break-word;
+      cursor: pointer;
+    }
+
+    .bingo-cell.clicked {
+      background-color: #add8e6; /* Highlight color for clicked state */
     }
 
     button {
@@ -131,6 +202,20 @@ Bingo Item 25`;
 
     button:hover {
       background-color: #0056b3;
+    }
+
+    .bingo-running-warning {
+      /* Add your styles as needed */
+      padding: 1rem;
+      margin: 20px;
+      background-color: #f9f9f9;
+      border: 5px solid orange;
+      border-radius: 10px;
+      /* center text and buttons */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
   </style>
 
@@ -148,13 +233,26 @@ Bingo Item 25`;
     <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
     <button on:click={downloadPDF}>Download as PDF</button>
 
-    {#if grid.length > 0}
-      <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
-        {#each grid as row}
-          {#each row as cell}
-            <div class="bingo-cell">{cell}</div>
-          {/each}
-        {/each}
+    {#if running_bingo && tried_to_regen}
+      <div class="bingo-running-warning">
+        <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
+        <button style="background-color: darkred;" on:click={resetBingo}>Stop Bingo and Regenerate</button>
       </div>
+    {/if}
+
+    {#if grid.length > 0}
+    <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
+      {#each grid as row}
+        {#each row as cell}
+          <div
+            class="bingo-cell"
+            on:click={() => {cell.clicked = !cell.clicked; saveGridAsCookie(grid);running_bingo = true;}}
+            class:clicked={cell.clicked}
+          >
+            {cell.value}
+          </div>
+        {/each}
+      {/each}
+    </div>
     {/if}
   </div>

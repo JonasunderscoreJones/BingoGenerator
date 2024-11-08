@@ -2,6 +2,10 @@
     import { onMount, afterUpdate } from 'svelte';
     import html2canvas from 'html2canvas';
     import jsPDF from 'jspdf';
+    import { page } from '$app/stores';
+
+    $: queryParams = $page.url.searchParams;
+    $: bingocode = queryParams.get('bingo');
 
     let inputText = `Bingo Item 1
 Bingo Item 2
@@ -35,12 +39,24 @@ Bingo Item 25`;
     let running_bingo = true;
     let tried_to_regen = false;
 
+    // Function to add an empty cookie called gameLock
+    export function addGameLockCookie() {
+      document.cookie = `gameLock=;path=/;max-age=31536000`; // Cookie lasts for 1 year
+    }
+
+    // Function to check if the gameLock cookie is present
+    export function isGameLockCookiePresent() {
+      return document.cookie.split('; ').some(cookie => cookie.startsWith('gameLock='));
+    }
+
+    // Function to delete the gameLock cookie
+    export function deleteGameLockCookie() {
+      document.cookie = `gameLock=;path=/;max-age=0`;
+    }
+
+
     // Function to save a string as a cookie
     export function saveEntriesAsCookie(entries, cookieName = 'bingoEntries') {
-      if (entries === '' || entries === inputText) {
-        deleteSavedEntriesCookie(cookieName);
-        return;
-      }
       document.cookie = `${cookieName}=${encodeURIComponent(entries)};path=/;max-age=31536000`; // Cookie lasts for 1 year
     }
 
@@ -86,6 +102,7 @@ Bingo Item 25`;
 
     export function deleteSavedGridCookie(cookieName = 'bingoGrid') {
       document.cookie = `${cookieName}=;path=/;max-age=0`;
+      deleteGameLockCookie();
     }
 
 
@@ -113,6 +130,7 @@ Bingo Item 25`;
       running_bingo = false;
       tried_to_regen = false;
       generateBingo();
+      deleteGameLockCookie();
     }
 
     afterUpdate(() => {
@@ -146,22 +164,8 @@ Bingo Item 25`;
       pdf.save('bingo-grid.pdf');
     }
 
-    export function deleteGridOnNoClicked() {
-      let hasClicked = false;
-
-      // Loop through the grid to check for any true clicked values
-      for (let row of grid) {
-        for (let cell of row) {
-          if (cell.clicked) {
-            hasClicked = true;
-            break;
-          }
-        }
-        if (hasClicked) break;
-      }
-
-      // If no clicked values were found, delete the cookie and update variables
-      if (!hasClicked) {
+    export function deleteGridCookieOnNotPlaying() {
+      if (!isGameLockCookiePresent()) {
         deleteSavedGridCookie();
         running_bingo = false;
         tried_to_regen = false;
@@ -172,7 +176,7 @@ Bingo Item 25`;
       const savedGrid = getGridFromCookie();
       const savedEntries = getEntriesFromCookie();
 
-      deleteGridOnNoClicked();
+      deleteGridCookieOnNotPlaying();
 
       if (savedGrid) {
         grid = savedGrid;
@@ -275,6 +279,9 @@ Bingo Item 25`;
         <button style="background-color: darkred;" on:click={resetBingo}>Stop Bingo and Regenerate</button>
       </div>
     {/if}
+    {#if running_bingo && !tried_to_regen}
+      <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
+    {/if}
 
     {#if grid.length > 0}
     <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
@@ -282,7 +289,7 @@ Bingo Item 25`;
         {#each row as cell}
           <div
             class="bingo-cell"
-            on:click={() => {cell.clicked = !cell.clicked; saveGridAsCookie(grid);running_bingo = true;}}
+            on:click={() => {cell.clicked = !cell.clicked; saveGridAsCookie(grid);running_bingo = true;addGameLockCookie();}}
             class:clicked={cell.clicked}
           >
             {cell.value}

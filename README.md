@@ -1,2 +1,2 @@
-# BingoGenerator
- Simplistic Random Bingo Generator Website
+# jonasjones.dev
+ My website at https://jonasjones.dev

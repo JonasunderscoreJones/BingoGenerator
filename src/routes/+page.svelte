@@ -119,7 +119,7 @@ Bingo Item 25`;
     }
 
     button {
-      margin-top: 10px;
+      margin-bottom: 30px;
       padding: 10px 20px;
       border: none;
       background-color: #007bff;
@@ -136,14 +136,20 @@ Bingo Item 25`;
 
   <div class="bingo-grid-container">
     <h1>Randomized 5x5 Bingo Generator</h1>
+    <div style="margin-bottom: 10px;">
+        <label for="rows">Rows:</label>
+        <input id="rows" type="number" bind:value={rows} min="1" max="10" style="width: 50px; margin-right: 10px;" on:input={generateBingo} />
+
+        <label for="cols">Columns:</label>
+        <input id="cols" type="number" bind:value={cols} min="1" max="10" style="width: 50px;" on:input={generateBingo} />
+    </div>
     <p>Enter your items below and click the button to generate a random 5x5 bingo grid.</p>
-    <textarea bind:value={inputText} placeholder="Enter items line by line" style="width: 80%; height: 300px; margin-bottom: 10px;"></textarea>
+    <textarea bind:value={inputText} placeholder="Enter items line by line" style="width: 80%; height: 300px; margin-bottom: 10px;" on:input={generateBingo}></textarea>
     <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
-    <button on:click={generateBingo}>Generate Random Bingo</button>
     <button on:click={downloadPDF}>Download as PDF</button>
 
     {#if grid.length > 0}
-      <div class="bingo-grid" style="grid-template-columns: repeat(5, 1fr);">
+      <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
         {#each grid as row}
           {#each row as cell}
             <div class="bingo-cell">{cell}</div>

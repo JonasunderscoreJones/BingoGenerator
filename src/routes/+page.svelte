@@ -126,6 +126,43 @@ Bingo Item 25`;
       saveGridAsCookie(grid);
     }
 
+    function checkBingo() {
+      // Check rows for bingo
+      for (let row of grid) {
+        if (row.every(cell => cell.clicked)) {
+          return true; // Bingo detected in this row
+        }
+      }
+
+      // Check columns for bingo
+      for (let col = 0; col < grid[0].length; col++) {
+        if (grid.every(row => row[col].clicked)) {
+          return true; // Bingo detected in this column
+        }
+      }
+
+      // Check diagonals for bingo
+      if (grid.every((row, i) => row[i].clicked)) {
+        return true; // Bingo detected in the top-left to bottom-right diagonal
+      }
+
+      if (grid.every((row, i) => row[grid.length - 1 - i].clicked)) {
+        return true; // Bingo detected in the top-right to bottom-left diagonal
+      }
+
+      return false; // No bingo detected
+    }
+
+    function cellClicked() {
+      saveGridAsCookie(grid);
+      running_bingo = true;
+      addGameLockCookie();
+      if (checkBingo()) {
+        alert('Bingo!');
+      }
+    }
+
+
     function resetBingo() {
       running_bingo = false;
       tried_to_regen = false;
@@ -290,7 +327,7 @@ Bingo Item 25`;
         {#each row as cell}
           <div
             class="bingo-cell"
-            on:click={() => {cell.clicked = !cell.clicked; saveGridAsCookie(grid);running_bingo = true;addGameLockCookie();}}
+            on:click={() => {cell.clicked = !cell.clicked; cellClicked();}}
             class:clicked={cell.clicked}
           >
             {cell.value}

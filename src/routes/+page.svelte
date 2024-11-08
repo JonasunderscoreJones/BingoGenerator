@@ -37,6 +37,10 @@ Bingo Item 25`;
 
     // Function to save a string as a cookie
     export function saveEntriesAsCookie(entries, cookieName = 'bingoEntries') {
+      if (entries === '' || entries === inputText) {
+        deleteSavedEntriesCookie(cookieName);
+        return;
+      }
       document.cookie = `${cookieName}=${encodeURIComponent(entries)};path=/;max-age=31536000`; // Cookie lasts for 1 year
     }
 
@@ -52,6 +56,9 @@ Bingo Item 25`;
       return null; // Return null if the cookie is not found
     }
 
+    export function deleteSavedEntriesCookie(cookieName = 'bingoEntries') {
+      document.cookie = `${cookieName}=;path=/;max-age=0`;
+    }
 
     // Function to save the nested list as a cookie
     export function saveGridAsCookie(grid, cookieName = 'bingoGrid') {
@@ -66,6 +73,7 @@ Bingo Item 25`;
         const [name, value] = cookie.split('=');
         if (name === cookieName) {
           try {
+            console.log(JSON.parse(decodeURIComponent(value)))
             return JSON.parse(decodeURIComponent(value));
           } catch (error) {
             console.error('Error parsing grid from cookie:', error);
@@ -74,6 +82,10 @@ Bingo Item 25`;
         }
       }
       return null; // Return null if the cookie is not found
+    }
+
+    export function deleteSavedGridCookie(cookieName = 'bingoGrid') {
+      document.cookie = `${cookieName}=;path=/;max-age=0`;
     }
 
 
@@ -134,9 +146,33 @@ Bingo Item 25`;
       pdf.save('bingo-grid.pdf');
     }
 
+    export function deleteGridOnNoClicked() {
+      let hasClicked = false;
+
+      // Loop through the grid to check for any true clicked values
+      for (let row of grid) {
+        for (let cell of row) {
+          if (cell.clicked) {
+            hasClicked = true;
+            break;
+          }
+        }
+        if (hasClicked) break;
+      }
+
+      // If no clicked values were found, delete the cookie and update variables
+      if (!hasClicked) {
+        deleteSavedGridCookie();
+        running_bingo = false;
+        tried_to_regen = false;
+      }
+    }
+
     onMount(() => {
       const savedGrid = getGridFromCookie();
       const savedEntries = getEntriesFromCookie();
+
+      deleteGridOnNoClicked();
 
       if (savedGrid) {
         grid = savedGrid;

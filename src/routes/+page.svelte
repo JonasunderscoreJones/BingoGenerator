@@ -255,4 +255,5 @@ Bingo Item 25`;
       {/each}
     </div>
     {/if}
+    <p>Notice: This Website uses functional Cookies to store the Running Bingo Game as well as the Entered Bingo Entries.</p>
   </div>

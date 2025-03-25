@@ -1,16 +1,16 @@
 <script>
-    import { onMount, afterUpdate } from 'svelte';
-    import html2canvas from 'html2canvas';
-    import jsPDF from 'jspdf';
-    import { page } from '$app/stores';
-    import party from "party-js";
-    import { getGridFromCookie, saveGridAsCookie, getEntriesFromCookie, saveEntriesAsCookie, deleteSavedGridCookie, isGameLockCookiePresent, addGameLockCookie, deleteGameLockCookie } from '$lib/cookies.js';
-
-    $: queryParams = $page.url.searchParams;
-    $: bingocode = queryParams.get('bingo');
-
-    let inputText = `Bingo Item 1
   import '$lib/styles/main.css';
+  import { onMount, afterUpdate } from 'svelte';
+  import html2canvas from 'html2canvas';
+  import jsPDF from 'jspdf';
+  import { page } from '$app/stores';
+  import party from "party-js";
+  import { getGridFromCookie, saveGridAsCookie, getEntriesFromCookie, saveEntriesAsCookie, deleteSavedGridCookie, isGameLockCookiePresent, addGameLockCookie, deleteGameLockCookie } from '$lib/cookies.js';
+
+  $: queryParams = $page.url.searchParams;
+  $: bingocode = queryParams.get('bingo');
+
+  let inputText = `Bingo Item 1
 Bingo Item 2
 Bingo Item 3
 Bingo Item 4
@@ -36,200 +36,200 @@ Bingo Item 23
 Bingo Item 24
 Bingo Item 25`;
 
-    let rows = 5;
-    let cols = 5;
-    let grid = [];
-    let running_bingo = true;
-    let tried_to_regen = false;
-    let bingoCount = 0;
+  let rows = 5;
+  let cols = 5;
+  let grid = [];
+  let running_bingo = true;
+  let tried_to_regen = false;
+  let bingoCount = 0;
 
-    let closeAlertButton = null;
-    let alertBackground = null;
+  let closeAlertButton = null;
+  let alertBackground = null;
 
-    function openAlert() {
-      alertBackground.style.display = 'flex';
+  function openAlert() {
+    alertBackground.style.display = 'flex';
+  }
+
+  function closeAlert() {
+    alertBackground.style.display = 'none';
+  }
+
+
+  function generateBingo() {
+    if (running_bingo) {
+      tried_to_regen = true;
+      return;
     }
-
-    function closeAlert() {
-      alertBackground.style.display = 'none';
-    }
-
-
-    function generateBingo() {
-      if (running_bingo) {
-        tried_to_regen = true;
-        return;
+    const inputLines = inputText.split('\n').map(line => line.trim()).filter(Boolean);
+    grid = Array(rows * cols).fill('');
+    const shuffledLines = [...inputLines].sort(() => Math.random() - 0.5);
+    shuffledLines.forEach((line, index) => {
+      if (index < grid.length) {
+        grid[index] = { value: line, clicked: false };
       }
-      const inputLines = inputText.split('\n').map(line => line.trim()).filter(Boolean);
-      grid = Array(rows * cols).fill('');
-      const shuffledLines = [...inputLines].sort(() => Math.random() - 0.5);
-      shuffledLines.forEach((line, index) => {
-        if (index < grid.length) {
-          grid[index] = { value: line, clicked: false };
-        }
-      });
-      grid = Array.from({ length: rows }, (_, rowIndex) =>
-        grid.slice(rowIndex * cols, rowIndex * cols + cols)
-      );
-      saveEntriesAsCookie(inputText);
-      saveGridAsCookie(grid);
-    }
-
-    function checkBingo() {
-      // Check rows for bingo
-      for (let row of grid) {
-        if (row.every(cell => cell.clicked)) {
-          return true; // Bingo detected in this row
-        }
-      }
-
-      // Check columns for bingo
-      for (let col = 0; col < grid[0].length; col++) {
-        if (grid.every(row => row[col].clicked)) {
-          return true; // Bingo detected in this column
-        }
-      }
-
-      // Check diagonals for bingo
-      if (grid.every((row, i) => row[i].clicked)) {
-        return true; // Bingo detected in the top-left to bottom-right diagonal
-      }
-
-      if (grid.every((row, i) => row[grid.length - 1 - i].clicked)) {
-        return true; // Bingo detected in the top-right to bottom-left diagonal
-      }
-
-      return false; // No bingo detected
-    }
-
-    function getBingoCount() {
-      let bingoCount = 0; // To count the number of bingos
-
-      // Check rows for bingo
-      for (let row of grid) {
-        if (row.every(cell => cell.clicked)) {
-          bingoCount++; // Bingo detected in this row
-        }
-      }
-
-      // Check columns for bingo
-      for (let col = 0; col < grid[0].length; col++) {
-        if (grid.every(row => row[col].clicked)) {
-          bingoCount++; // Bingo detected in this column
-        }
-      }
-
-      // Check top-left to bottom-right diagonal for bingo
-      if (grid.every((row, i) => row[i].clicked)) {
-        bingoCount++; // Bingo detected in the top-left to bottom-right diagonal
-      }
-
-      // Check top-right to bottom-left diagonal for bingo
-      if (grid.every((row, i) => row[grid.length - 1 - i].clicked)) {
-        bingoCount++; // Bingo detected in the top-right to bottom-left diagonal
-      }
-
-      return bingoCount; // Return the total count of bingos detected
-    }
-
-    function cellClicked() {
-      saveGridAsCookie(grid);
-      running_bingo = true;
-      addGameLockCookie();
-      // check if bingo achieved and new bingo count is larger than previous
-      if (checkBingo() && getBingoCount() > bingoCount) {
-        openAlert();
-        triggerConfetti();
-      }
-      bingoCount = getBingoCount();
-    }
-
-
-    function resetBingo() {
-      running_bingo = false;
-      tried_to_regen = false;
-      generateBingo();
-      deleteGameLockCookie();
-    }
-
-    afterUpdate(() => {
-      adjustFontSizes();
     });
+    grid = Array.from({ length: rows }, (_, rowIndex) =>
+      grid.slice(rowIndex * cols, rowIndex * cols + cols)
+    );
+    saveEntriesAsCookie(inputText);
+    saveGridAsCookie(grid);
+  }
 
-    function adjustFontSizes() {
-      const cells = document.querySelectorAll('.bingo-cell');
-      cells.forEach(cell => {
-        let fontSize = 18; // Base font size
-        cell.style.fontSize = `${fontSize}px`;
-
-        while (cell.scrollHeight > cell.clientHeight || cell.scrollWidth > cell.clientWidth) {
-          fontSize--;
-          cell.style.fontSize = `${fontSize}px`;
-          if (fontSize < 8) break; // Minimum font size limit
-        }
-      });
-    }
-
-    async function downloadPDF() {
-      const gridElement = document.querySelector('.bingo-grid');
-      const canvas = await html2canvas(gridElement, { scale: 2 });
-      const imgData = canvas.toDataURL('image/png');
-
-      const padding = 40;
-
-      // Create a jsPDF instance
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'pt',
-        format: [canvas.width + padding * 2, canvas.height + padding * 2],
-      });
-
-      // Add the image to the PDF with padding
-      pdf.addImage(imgData, 'PNG', padding, padding, canvas.width, canvas.height);
-
-      // Save the PDF
-      pdf.save('bingo-grid.pdf');
-    }
-
-
-    export function deleteGridCookieOnNotPlaying() {
-      if (!isGameLockCookiePresent()) {
-        deleteSavedGridCookie();
-        running_bingo = false;
-        tried_to_regen = false;
+  function checkBingo() {
+    // Check rows for bingo
+    for (let row of grid) {
+      if (row.every(cell => cell.clicked)) {
+        return true; // Bingo detected in this row
       }
     }
 
-    function triggerConfetti() {
-    // `party.confetti` can be used for screen-wide confetti
-    party.confetti(document.body, {
-      count: party.variation.range(50, 2000), // Number of confetti pieces
-      spread: 70, // Spread of confetti
-      size: party.variation.range(0.5, 1.5), // Size of confetti
+    // Check columns for bingo
+    for (let col = 0; col < grid[0].length; col++) {
+      if (grid.every(row => row[col].clicked)) {
+        return true; // Bingo detected in this column
+      }
+    }
+
+    // Check diagonals for bingo
+    if (grid.every((row, i) => row[i].clicked)) {
+      return true; // Bingo detected in the top-left to bottom-right diagonal
+    }
+
+    if (grid.every((row, i) => row[grid.length - 1 - i].clicked)) {
+      return true; // Bingo detected in the top-right to bottom-left diagonal
+    }
+
+    return false; // No bingo detected
+  }
+
+  function getBingoCount() {
+    let bingoCount = 0; // To count the number of bingos
+
+    // Check rows for bingo
+    for (let row of grid) {
+      if (row.every(cell => cell.clicked)) {
+        bingoCount++; // Bingo detected in this row
+      }
+    }
+
+    // Check columns for bingo
+    for (let col = 0; col < grid[0].length; col++) {
+      if (grid.every(row => row[col].clicked)) {
+        bingoCount++; // Bingo detected in this column
+      }
+    }
+
+    // Check top-left to bottom-right diagonal for bingo
+    if (grid.every((row, i) => row[i].clicked)) {
+      bingoCount++; // Bingo detected in the top-left to bottom-right diagonal
+    }
+
+    // Check top-right to bottom-left diagonal for bingo
+    if (grid.every((row, i) => row[grid.length - 1 - i].clicked)) {
+      bingoCount++; // Bingo detected in the top-right to bottom-left diagonal
+    }
+
+    return bingoCount; // Return the total count of bingos detected
+  }
+
+  function cellClicked() {
+    saveGridAsCookie(grid);
+    running_bingo = true;
+    addGameLockCookie();
+    // check if bingo achieved and new bingo count is larger than previous
+    if (checkBingo() && getBingoCount() > bingoCount) {
+      openAlert();
+      triggerConfetti();
+    }
+    bingoCount = getBingoCount();
+  }
+
+
+  function resetBingo() {
+    running_bingo = false;
+    tried_to_regen = false;
+    generateBingo();
+    deleteGameLockCookie();
+  }
+
+  afterUpdate(() => {
+    adjustFontSizes();
+  });
+
+  function adjustFontSizes() {
+    const cells = document.querySelectorAll('.bingo-cell');
+    cells.forEach(cell => {
+      let fontSize = 18; // Base font size
+      cell.style.fontSize = `${fontSize}px`;
+
+      while (cell.scrollHeight > cell.clientHeight || cell.scrollWidth > cell.clientWidth) {
+        fontSize--;
+        cell.style.fontSize = `${fontSize}px`;
+        if (fontSize < 8) break; // Minimum font size limit
+      }
     });
   }
 
-    onMount(() => {
-      const savedGrid = getGridFromCookie();
-      const savedEntries = getEntriesFromCookie();
+  async function downloadPDF() {
+    const gridElement = document.querySelector('.bingo-grid');
+    const canvas = await html2canvas(gridElement, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
 
-      closeAlertButton = document.getElementById('close-alert');
-      alertBackground = document.getElementById('alert-background');
-      closeAlertButton.addEventListener('click', closeAlert);
+    const padding = 40;
 
-      deleteGridCookieOnNotPlaying();
-
-      if (savedGrid) {
-        grid = savedGrid;
-        if (savedEntries) {
-          inputText = savedEntries;
-        }
-        bingoCount = getBingoCount();
-      } else {
-        running_bingo = false;
-        generateBingo();
-      }
+    // Create a jsPDF instance
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: [canvas.width + padding * 2, canvas.height + padding * 2],
     });
+
+    // Add the image to the PDF with padding
+    pdf.addImage(imgData, 'PNG', padding, padding, canvas.width, canvas.height);
+
+    // Save the PDF
+    pdf.save('bingo-grid.pdf');
+  }
+
+
+  export function deleteGridCookieOnNotPlaying() {
+    if (!isGameLockCookiePresent()) {
+      deleteSavedGridCookie();
+      running_bingo = false;
+      tried_to_regen = false;
+    }
+  }
+
+  function triggerConfetti() {
+  // `party.confetti` can be used for screen-wide confetti
+  party.confetti(document.body, {
+    count: party.variation.range(50, 2000), // Number of confetti pieces
+    spread: 70, // Spread of confetti
+    size: party.variation.range(0.5, 1.5), // Size of confetti
+  });
+}
+
+  onMount(() => {
+    const savedGrid = getGridFromCookie();
+    const savedEntries = getEntriesFromCookie();
+
+    closeAlertButton = document.getElementById('close-alert');
+    alertBackground = document.getElementById('alert-background');
+    closeAlertButton.addEventListener('click', closeAlert);
+
+    deleteGridCookieOnNotPlaying();
+
+    if (savedGrid) {
+      grid = savedGrid;
+      if (savedEntries) {
+        inputText = savedEntries;
+      }
+      bingoCount = getBingoCount();
+    } else {
+      running_bingo = false;
+      generateBingo();
+    }
+  });
 </script>
 
 <div class="bingo-grid-container">

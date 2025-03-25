@@ -21,6 +21,7 @@
 	"type": "module",
 	"dependencies": {
 		"html2canvas": "^1.4.1",
-		"jspdf": "^2.5.2"
+		"jspdf": "^2.5.2",
+		"party-js": "^2.2.0"
 	}
 }

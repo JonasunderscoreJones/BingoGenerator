@@ -3,6 +3,7 @@
     import html2canvas from 'html2canvas';
     import jsPDF from 'jspdf';
     import { page } from '$app/stores';
+    import party from "party-js";
 
     $: queryParams = $page.url.searchParams;
     $: bingocode = queryParams.get('bingo');
@@ -38,6 +39,17 @@ Bingo Item 25`;
     let grid = [];
     let running_bingo = true;
     let tried_to_regen = false;
+
+    let closeAlertButton = null;
+    let alertBackground = null;
+
+    function openAlert() {
+      alertBackground.style.display = 'flex';
+    }
+
+    function closeAlert() {
+      alertBackground.style.display = 'none';
+    }
 
     // Function to add an empty cookie called gameLock
     export function addGameLockCookie() {
@@ -158,9 +170,8 @@ Bingo Item 25`;
       running_bingo = true;
       addGameLockCookie();
       if (checkBingo()) {
-        setTimeout(() => {
-          alert('Bingo!');
-        }, 0);
+        openAlert();
+        triggerConfetti();
       }
     }
 
@@ -211,9 +222,22 @@ Bingo Item 25`;
       }
     }
 
+    function triggerConfetti() {
+    // `party.confetti` can be used for screen-wide confetti
+    party.confetti(document.body, {
+      count: party.variation.range(50, 2000), // Number of confetti pieces
+      spread: 70, // Spread of confetti
+      size: party.variation.range(0.5, 1.5), // Size of confetti
+    });
+  }
+
     onMount(() => {
       const savedGrid = getGridFromCookie();
       const savedEntries = getEntriesFromCookie();
+
+      closeAlertButton = document.getElementById('close-alert');
+      alertBackground = document.getElementById('alert-background');
+      closeAlertButton.addEventListener('click', closeAlert);
 
       deleteGridCookieOnNotPlaying();
 
@@ -296,6 +320,28 @@ Bingo Item 25`;
       align-items: center;
       text-align: center;
     }
+
+    .alert-background {
+      display: none; /* Hidden by default */
+      position: fixed; /* Fixed position */
+      top: 0;
+      left: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      background-color: rgba(0, 0, 0, 0.7); /* Dark background */
+      justify-content: center; /* Center the alert content */
+      align-items: center; /* Center the alert content */
+      z-index: 1000; /* Keep it on top */
+    }
+
+    .alert-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
   </style>
 
   <div class="bingo-grid-container">
@@ -339,4 +385,13 @@ Bingo Item 25`;
     </div>
     {/if}
     <p>Notice: This Website uses functional Cookies to store the Running Bingo Game as well as the Entered Bingo Entries.</p>
+  </div>
+
+
+  <div id="alert-background" class="alert-background">
+    <div class="alert-content">
+      <h2>Bingo!</h2>
+      <p>You achieved a Bingo!</p>
+      <button id="close-alert" class="close-btn">Close</button>
+    </div>
   </div>

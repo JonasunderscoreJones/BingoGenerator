@@ -158,7 +158,9 @@ Bingo Item 25`;
       running_bingo = true;
       addGameLockCookie();
       if (checkBingo()) {
-        alert('Bingo!');
+        setTimeout(() => {
+          alert('Bingo!');
+        }, 0);
       }
     }
 

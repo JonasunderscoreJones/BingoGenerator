@@ -260,10 +260,12 @@ Bingo Item 25`;
       text-align: center;
       font-size: 18px; /* Base font size */
       background-color: #fff;
+      color: black;
       border-radius: 4px;
       overflow: hidden;
       word-wrap: break-word;
       cursor: pointer;
+      margin: 0;
     }
 
     .bingo-cell.clicked {
@@ -351,13 +353,16 @@ Bingo Item 25`;
     <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
       {#each grid as row}
         {#each row as cell}
-          <div
-            class="bingo-cell"
-            on:click={() => {cell.clicked = !cell.clicked; cellClicked();}}
-            class:clicked={cell.clicked}
-          >
-            {cell.value}
-          </div>
+          <button class="bingo-cell"
+          on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
+          on:keydown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
+              cell.clicked = !cell.clicked;
+              cellClicked();
+            }
+          }}
+          class:clicked={cell.clicked}
+          >{cell.value}</button>
         {/each}
       {/each}
     </div>

@@ -10,6 +10,7 @@
     $: bingocode = queryParams.get('bingo');
 
     let inputText = `Bingo Item 1
+  import '$lib/styles/main.css';
 Bingo Item 2
 Bingo Item 3
 Bingo Item 4

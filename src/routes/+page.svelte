@@ -39,6 +39,7 @@ Bingo Item 25`;
     let grid = [];
     let running_bingo = true;
     let tried_to_regen = false;
+    let bingoCount = 0;
 
     let closeAlertButton = null;
     let alertBackground = null;
@@ -165,14 +166,46 @@ Bingo Item 25`;
       return false; // No bingo detected
     }
 
+    function getBingoCount() {
+      let bingoCount = 0; // To count the number of bingos
+
+      // Check rows for bingo
+      for (let row of grid) {
+        if (row.every(cell => cell.clicked)) {
+          bingoCount++; // Bingo detected in this row
+        }
+      }
+
+      // Check columns for bingo
+      for (let col = 0; col < grid[0].length; col++) {
+        if (grid.every(row => row[col].clicked)) {
+          bingoCount++; // Bingo detected in this column
+        }
+      }
+
+      // Check top-left to bottom-right diagonal for bingo
+      if (grid.every((row, i) => row[i].clicked)) {
+        bingoCount++; // Bingo detected in the top-left to bottom-right diagonal
+      }
+
+      // Check top-right to bottom-left diagonal for bingo
+      if (grid.every((row, i) => row[grid.length - 1 - i].clicked)) {
+        bingoCount++; // Bingo detected in the top-right to bottom-left diagonal
+      }
+
+      return bingoCount; // Return the total count of bingos detected
+    }
+
     function cellClicked() {
       saveGridAsCookie(grid);
       running_bingo = true;
       addGameLockCookie();
-      if (checkBingo()) {
+      // check if bingo achieved and new bingo count is larger than previous
+      if (checkBingo() && getBingoCount() > bingoCount) {
         openAlert();
         triggerConfetti();
       }
+      bingoCount = getBingoCount();
     }
 
 
@@ -246,6 +279,7 @@ Bingo Item 25`;
         if (savedEntries) {
           inputText = savedEntries;
         }
+        bingoCount = getBingoCount();
       } else {
         running_bingo = false;
         generateBingo();
@@ -391,7 +425,7 @@ Bingo Item 25`;
   <div id="alert-background" class="alert-background">
     <div class="alert-content">
       <h2>Bingo!</h2>
-      <p>You achieved a Bingo!</p>
+      <p>You achieved a new Bingo!<br>You now have <b>{bingoCount}</b> Bingos.</p>
       <button id="close-alert" class="close-btn">Close</button>
     </div>
   </div>

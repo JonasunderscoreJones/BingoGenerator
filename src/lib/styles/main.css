@@ -1,0 +1,90 @@
+.bingo-grid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    background-color: #f4f4f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bingo-grid {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.bingo-cell {
+    border: 1px solid #333;
+    width: 150px; /* Bigger size */
+    height: 150px; /* Bigger size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 18px; /* Base font size */
+    background-color: #fff;
+    color: black;
+    border-radius: 4px;
+    overflow: hidden;
+    word-wrap: break-word;
+    cursor: pointer;
+    margin: 0;
+}
+
+.bingo-cell.clicked {
+    background-color: #add8e6; /* Highlight color for clicked state */
+}
+
+button {
+    margin-bottom: 30px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.bingo-running-warning {
+    /* Add your styles as needed */
+    padding: 1rem;
+    margin: 20px;
+    background-color: #f9f9f9;
+    border: 5px solid orange;
+    border-radius: 10px;
+    /* center text and buttons */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.alert-background {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed position */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.7); /* Dark background */
+    justify-content: center; /* Center the alert content */
+    align-items: center; /* Center the alert content */
+    z-index: 1000; /* Keep it on top */
+}
+
+.alert-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

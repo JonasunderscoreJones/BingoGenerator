@@ -229,152 +229,59 @@ Bingo Item 25`;
         generateBingo();
       }
     });
-  </script>
+</script>
 
-  <style>
-    .bingo-grid-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 20px;
-      padding: 20px;
-      border: 2px solid #333;
-      border-radius: 8px;
-      background-color: #f4f4f9;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+<div class="bingo-grid-container">
+  <h1>Randomized Bingo Generator</h1>
+  <div style="margin-bottom: 10px;">
+      <label for="rows">Rows:</label>
+      <input id="rows" type="number" bind:value={rows} min="1" max="10" style="width: 50px; margin-right: 10px;" on:input={generateBingo} />
 
-    .bingo-grid {
-      display: grid;
-      gap: 6px;
-      margin-bottom: 20px;
-    }
+      <label for="cols">Columns:</label>
+      <input id="cols" type="number" bind:value={cols} min="1" max="10" style="width: 50px;" on:input={generateBingo} />
+  </div>
+  <p>Enter your items below and click the button to generate a random 5x5 bingo grid.</p>
+  <textarea bind:value={inputText} placeholder="Enter items line by line" style="width: 80%; height: 300px; margin-bottom: 10px;" on:input={generateBingo}></textarea>
+  <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
+  <button on:click={downloadPDF}>Download as PDF</button>
+  <button on:click={generateBingo}>Regenerate Bingo</button>
 
-    .bingo-cell {
-      border: 1px solid #333;
-      width: 150px; /* Bigger size */
-      height: 150px; /* Bigger size */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      font-size: 18px; /* Base font size */
-      background-color: #fff;
-      color: black;
-      border-radius: 4px;
-      overflow: hidden;
-      word-wrap: break-word;
-      cursor: pointer;
-      margin: 0;
-    }
-
-    .bingo-cell.clicked {
-      background-color: #add8e6; /* Highlight color for clicked state */
-    }
-
-    button {
-      margin-bottom: 30px;
-      padding: 10px 20px;
-      border: none;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 1em;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .bingo-running-warning {
-      /* Add your styles as needed */
-      padding: 1rem;
-      margin: 20px;
-      background-color: #f9f9f9;
-      border: 5px solid orange;
-      border-radius: 10px;
-      /* center text and buttons */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .alert-background {
-      display: none; /* Hidden by default */
-      position: fixed; /* Fixed position */
-      top: 0;
-      left: 0;
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
-      background-color: rgba(0, 0, 0, 0.7); /* Dark background */
-      justify-content: center; /* Center the alert content */
-      align-items: center; /* Center the alert content */
-      z-index: 1000; /* Keep it on top */
-    }
-
-    .alert-content {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      width: 300px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-  </style>
-
-  <div class="bingo-grid-container">
-    <h1>Randomized Bingo Generator</h1>
-    <div style="margin-bottom: 10px;">
-        <label for="rows">Rows:</label>
-        <input id="rows" type="number" bind:value={rows} min="1" max="10" style="width: 50px; margin-right: 10px;" on:input={generateBingo} />
-
-        <label for="cols">Columns:</label>
-        <input id="cols" type="number" bind:value={cols} min="1" max="10" style="width: 50px;" on:input={generateBingo} />
+  {#if running_bingo && tried_to_regen}
+    <div class="bingo-running-warning">
+      <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
+      <button style="background-color: darkred;" on:click={resetBingo}>Stop Bingo and Regenerate</button>
     </div>
-    <p>Enter your items below and click the button to generate a random 5x5 bingo grid.</p>
-    <textarea bind:value={inputText} placeholder="Enter items line by line" style="width: 80%; height: 300px; margin-bottom: 10px;" on:input={generateBingo}></textarea>
-    <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
-    <button on:click={downloadPDF}>Download as PDF</button>
-    <button on:click={generateBingo}>Regenerate Bingo</button>
+  {/if}
+  {#if running_bingo && !tried_to_regen}
+    <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
+  {/if}
 
-    {#if running_bingo && tried_to_regen}
-      <div class="bingo-running-warning">
-        <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
-        <button style="background-color: darkred;" on:click={resetBingo}>Stop Bingo and Regenerate</button>
-      </div>
-    {/if}
-    {#if running_bingo && !tried_to_regen}
-      <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
-    {/if}
-
-    {#if grid.length > 0}
-    <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
-      {#each grid as row}
-        {#each row as cell}
-          <button class="bingo-cell"
-          on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
-          on:keydown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
-              cell.clicked = !cell.clicked;
-              cellClicked();
-            }
-          }}
-          class:clicked={cell.clicked}
-          >{cell.value}</button>
-        {/each}
+  {#if grid.length > 0}
+  <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
+    {#each grid as row}
+      {#each row as cell}
+        <button class="bingo-cell"
+        on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
+        on:keydown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
+            cell.clicked = !cell.clicked;
+            cellClicked();
+          }
+        }}
+        class:clicked={cell.clicked}
+        >{cell.value}</button>
       {/each}
-    </div>
-    {/if}
-    <p>Notice: This Website uses functional Cookies to store the Running Bingo Game as well as the Entered Bingo Entries.</p>
+    {/each}
   </div>
+  {/if}
+  <p>Notice: This Website uses functional Cookies to store the Running Bingo Game as well as the Entered Bingo Entries.</p>
+</div>
 
 
-  <div id="alert-background" class="alert-background">
-    <div class="alert-content">
-      <h2>Bingo!</h2>
-      <p>You achieved a new Bingo!<br>You now have <b>{bingoCount}</b> Bingos.</p>
-      <button id="close-alert" class="close-btn">Close</button>
-    </div>
+<div id="alert-background" class="alert-background">
+  <div class="alert-content">
+    <h2>Bingo!</h2>
+    <p>You achieved a new Bingo!<br>You now have <b>{bingoCount}</b> Bingos.</p>
+    <button id="close-alert" class="close-btn">Close</button>
   </div>
+</div>

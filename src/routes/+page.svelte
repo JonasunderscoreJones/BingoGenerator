@@ -5,7 +5,7 @@
   import jsPDF from 'jspdf';
   import { page } from '$app/stores';
   import party from "party-js";
-  import { getGridFromCookie, saveGridAsCookie, getEntriesFromCookie, saveEntriesAsCookie, deleteSavedGridCookie, isGameLockCookiePresent, addGameLockCookie, deleteGameLockCookie } from '$lib/cookies.js';
+  import { getGridFromCookie, saveGridAsCookie, getEntriesFromCookie, saveEntriesAsCookie, deleteSavedGridCookie, isGameLockCookiePresent, addGameLockCookie, deleteGameLockCookie, deleteAllCookies } from '$lib/cookies.js';
 
   $: queryParams = $page.url.searchParams;
   $: bingocode = queryParams.get('bingo');
@@ -345,6 +345,12 @@ Bingo Item 25`;
             <h3>Display</h3>
             <div class="settings-element">
               <button on:click={toggleTheme}>Toggle Dark/Light Mode</button>
+            </div>
+          </div>
+          <div class="settings-box flex-column-item">
+            <h3>Reset</h3>
+            <div class="settings-element">
+              <button on:click={deleteAllCookies}>Reset and delete Cookies</button>
             </div>
           </div>
         </div>

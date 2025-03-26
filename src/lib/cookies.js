@@ -92,3 +92,13 @@ export function deleteSavedGridCookie(cookieName = 'bingoGrid') {
     document.cookie = `${cookieName}=;path=/;max-age=0`;
     deleteGameLockCookie();
 }
+
+/**
+ * Delete all cookies and reload page
+ */
+export function deleteAllCookies() {
+    deleteSavedEntriesCookie();
+    deleteSavedGridCookie();
+    deleteGameLockCookie();
+    window.location.reload();
+}

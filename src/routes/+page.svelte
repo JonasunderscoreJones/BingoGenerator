@@ -310,7 +310,7 @@ Bingo Item 25`;
         <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
           {#each grid as row}
             {#each row as cell}
-              <button class="bingo-cell"
+              <button class="bingo-cell" style="width: calc((100vh - 10rem)/ {cols}); height: calc((100vh - 10rem)/ {rows});"
               on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
               on:keydown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key

@@ -64,6 +64,14 @@ body {
     line-height: 1.5;
     background-color: var(--bg-color);
     color: var(--text-color);
+    padding-bottom: 1rem;
+}
+
+.root-bingo-container {
+    display: flex;
+    width: 100vw;
+    height: calc(100vh - 3rem);
+    width: calc(100vw - 1rem);
 }
 
 .bingo-container {
@@ -72,18 +80,21 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    margin: 7px;
-    border-radius: 8px;}
+    margin: 0.5rem;
+    margin-bottom: 0;
+    border-radius: 8px;
+}
 
 .bingo-main-container {
     background-color: var(--content-bg-color);
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
 }
 
 .bingo-grid-container {
-    width: 95vw;
-    height: 94vh;
+    aspect-ratio: 1 / 1;
+    width: calc(100vh - 3rem);
     background-color: var(--content-bg-color);
 }
 

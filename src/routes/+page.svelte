@@ -1,5 +1,6 @@
 <script>
   import '$lib/styles/main.css';
+  import Footer from '$lib/components/Footer.svelte';
   import { onMount, afterUpdate } from 'svelte';
   import html2canvas from 'html2canvas';
   import jsPDF from 'jspdf';
@@ -257,59 +258,62 @@ Bingo Item 25`;
   });
 </script>
 
-<div class="flex-row-container">
-  <div class="bingo-container bingo-main-container">
-    <h1>Randomized Bingo Generator</h1>
-    <div style="margin-bottom: 10px;">
-    </div>
-    <div class="notice-box">
-      <div class="button-container">
-        <button on:click={generateBingo}>Regenerate Bingo</button>
-        <button on:click={downloadPDF}>Download as PDF</button>
-        <button on:click={openSettings}>Configure Bingo</button>
+<head>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<div class="root-bingo-container">
+  <div class="flex-row-container">
+    <div class="bingo-container bingo-main-container">
+      <h1>Randomized Bingo Generator</h1>
+      <div style="margin-bottom: 10px;">
       </div>
-      {#if running_bingo && tried_to_regen}
-        <div class="bingo-running-warning">
-          <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
-          <button on:click={resetBingo}>Stop Bingo and Regenerate</button>
+      <div class="notice-box">
+        <div class="button-container">
+          <button on:click={generateBingo}>Regenerate Bingo</button>
+          <button on:click={downloadPDF}>Download as PDF</button>
+          <button on:click={openSettings}>Configure Bingo</button>
         </div>
-      {/if}
-      {#if running_bingo && !tried_to_regen}
-        <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
-      {/if}
-    </div>
-    <div class="notice-box cookie-notice">
-      <p>Notice: This Website uses functional Cookies to store the Running Bingo Game, Settings and the Entered Bingo Entries.</p>
-    </div>
-  </div>
-  <div class="bingo-container bingo-grid-container">
-    {#if grid.length > 0}
-      <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
-        {#each grid as row}
-          {#each row as cell}
-            <button class="bingo-cell"
-            on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
-            on:keydown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
-                cell.clicked = !cell.clicked;
-                cellClicked();
-              }
-            }}
-            class:clicked={cell.clicked}
-            >{cell.value}</button>
-          {/each}
-        {/each}
+        {#if running_bingo && tried_to_regen}
+          <div class="bingo-running-warning">
+            <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
+            <button on:click={resetBingo}>Stop Bingo and Regenerate</button>
+          </div>
+        {/if}
+        {#if running_bingo && !tried_to_regen}
+          <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
+        {/if}
       </div>
-    {:else}
-    <div class="centered-notice notice-box">
-      <p>Click the Button to generate a new Bingo</p>
-      <button on:click={generateBingo}>Generate Bingo</button>
+      <div class="notice-box cookie-notice">
+        <p>This Website uses functional Cookies to store the Running Bingo Game, Settings and the Entered Bingo Entries.<br><br>They can be deleted in the Settings.</p>
+      </div>
     </div>
-    {/if}
+    <div class="bingo-container bingo-grid-container">
+      {#if grid.length > 0}
+        <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
+          {#each grid as row}
+            {#each row as cell}
+              <button class="bingo-cell"
+              on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
+              on:keydown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
+                  cell.clicked = !cell.clicked;
+                  cellClicked();
+                }
+              }}
+              class:clicked={cell.clicked}
+              >{cell.value}</button>
+            {/each}
+          {/each}
+        </div>
+      {:else}
+      <div class="centered-notice notice-box">
+        <p>Click the Button to generate a new Bingo</p>
+        <button on:click={generateBingo}>Generate Bingo</button>
+      </div>
+      {/if}
+    </div>
   </div>
-</div>
 
-<body>
   <div id="alert-background" class="overlay-background">
     <div class="overlay-content">
       <h2>Bingo!</h2>
@@ -359,4 +363,6 @@ Bingo Item 25`;
       <button id="close-settings" class="close-btn">Save and Close</button>
     </div>
   </div>
-</body>
+</div>
+
+<Footer />

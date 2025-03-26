@@ -38,8 +38,8 @@
     --bingo-cell-bg-color-hover: #ccc;
     --bingo-cell-clicked-bg-color: #aaa;
 
-    --button-bg-color: var(--bg-color);
-    --button-color: var(--text-color);
+    --button-bg-color: var(--text-color);
+    --button-color: var(--bg-color);
     --button-bg-color-hover: #ccc;
 
     --warning-bg-color: rgb(255, 204, 0);

@@ -1,0 +1,1 @@
+// all methods like fetching, communicating with and requesting game moves with the server

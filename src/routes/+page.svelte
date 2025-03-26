@@ -10,6 +10,8 @@
   $: queryParams = $page.url.searchParams;
   $: bingocode = queryParams.get('bingo');
 
+  let theme = 'light';
+
   let inputText = `Bingo Item 1
 Bingo Item 2
 Bingo Item 3
@@ -45,6 +47,8 @@ Bingo Item 25`;
 
   let closeAlertButton = null;
   let alertBackground = null;
+  let closeSettingsButton = null;
+  let settingsBackground = null;
 
   function openAlert() {
     alertBackground.style.display = 'flex';
@@ -52,6 +56,14 @@ Bingo Item 25`;
 
   function closeAlert() {
     alertBackground.style.display = 'none';
+  }
+
+  function openSettings() {
+    settingsBackground.style.display = 'flex';
+  }
+
+  function closeSettings() {
+    settingsBackground.style.display = 'none';
   }
 
 
@@ -201,21 +213,34 @@ Bingo Item 25`;
   }
 
   function triggerConfetti() {
-  // `party.confetti` can be used for screen-wide confetti
-  party.confetti(document.body, {
-    count: party.variation.range(50, 2000), // Number of confetti pieces
-    spread: 70, // Spread of confetti
-    size: party.variation.range(0.5, 1.5), // Size of confetti
-  });
-}
+    // `party.confetti` can be used for screen-wide confetti
+    party.confetti(document.body, {
+      count: party.variation.range(50, 2000), // Number of confetti pieces
+      spread: 70, // Spread of confetti
+      size: party.variation.range(0.5, 1.5), // Size of confetti
+    });
+  }
+
+  // Toggle between dark and light themes
+  function toggleTheme() {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+  }
 
   onMount(() => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    theme = prefersDark ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+
     const savedGrid = getGridFromCookie();
     const savedEntries = getEntriesFromCookie();
 
     closeAlertButton = document.getElementById('close-alert');
     alertBackground = document.getElementById('alert-background');
     closeAlertButton.addEventListener('click', closeAlert);
+    closeSettingsButton = document.getElementById('close-settings');
+    settingsBackground = document.getElementById('settings-background');
+    closeSettingsButton.addEventListener('click', closeSettings);
 
     deleteGridCookieOnNotPlaying();
 
@@ -232,57 +257,95 @@ Bingo Item 25`;
   });
 </script>
 
-<div class="bingo-grid-container">
-  <h1>Randomized Bingo Generator</h1>
-  <div style="margin-bottom: 10px;">
-      <label for="rows">Rows:</label>
-      <input id="rows" type="number" bind:value={rows} min="1" max="10" style="width: 50px; margin-right: 10px;" on:input={generateBingo} />
-
-      <label for="cols">Columns:</label>
-      <input id="cols" type="number" bind:value={cols} min="1" max="10" style="width: 50px;" on:input={generateBingo} />
-  </div>
-  <p>Enter your items below and click the button to generate a random 5x5 bingo grid.</p>
-  <textarea bind:value={inputText} placeholder="Enter items line by line" style="width: 80%; height: 300px; margin-bottom: 10px;" on:input={generateBingo}></textarea>
-  <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
-  <button on:click={downloadPDF}>Download as PDF</button>
-  <button on:click={generateBingo}>Regenerate Bingo</button>
-
-  {#if running_bingo && tried_to_regen}
-    <div class="bingo-running-warning">
-      <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
-      <button style="background-color: darkred;" on:click={resetBingo}>Stop Bingo and Regenerate</button>
+<div class="flex-row-container">
+  <div class="bingo-container bingo-main-container">
+    <h1>Randomized Bingo Generator</h1>
+    <div style="margin-bottom: 10px;">
     </div>
-  {/if}
-  {#if running_bingo && !tried_to_regen}
-    <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
-  {/if}
+    <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
+    <div>
+      <button on:click={generateBingo}>Regenerate Bingo</button>
+      <button on:click={downloadPDF}>Download as PDF</button>
+      <button on:click={openSettings}>Configure Bingo</button>
+    </div>
+    {#if running_bingo && tried_to_regen}
+      <div class="bingo-running-warning">
+        <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
+        <button style="background-color: darkred;" on:click={resetBingo}>Stop Bingo and Regenerate</button>
+      </div>
+    {/if}
+    {#if running_bingo && !tried_to_regen}
+      <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
+    {/if}
+    <div class="settings-element cookie-notice">
+      <p>Notice: This Website uses functional Cookies to store the Running Bingo Game as well as the Entered Bingo Entries.</p>
+    </div>
+  </div>
 
-  {#if grid.length > 0}
-  <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
-    {#each grid as row}
-      {#each row as cell}
-        <button class="bingo-cell"
-        on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
-        on:keydown={(event) => {
-          if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
-            cell.clicked = !cell.clicked;
-            cellClicked();
-          }
-        }}
-        class:clicked={cell.clicked}
-        >{cell.value}</button>
+  <div class="bingo-container bingo-grid-container">
+    {#if grid.length > 0}
+    <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
+      {#each grid as row}
+        {#each row as cell}
+          <button class="bingo-cell"
+          on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
+          on:keydown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
+              cell.clicked = !cell.clicked;
+              cellClicked();
+            }
+          }}
+          class:clicked={cell.clicked}
+          >{cell.value}</button>
+        {/each}
       {/each}
-    {/each}
-  </div>
-  {/if}
-  <p>Notice: This Website uses functional Cookies to store the Running Bingo Game as well as the Entered Bingo Entries.</p>
-</div>
-
-
-<div id="alert-background" class="alert-background">
-  <div class="alert-content">
-    <h2>Bingo!</h2>
-    <p>You achieved a new Bingo!<br>You now have <b>{bingoCount}</b> Bingos.</p>
-    <button id="close-alert" class="close-btn">Close</button>
+    </div>
+    {/if}
   </div>
 </div>
+
+<body>
+  <div id="alert-background" class="overlay-background">
+    <div class="overlay-content">
+      <h2>Bingo!</h2>
+      <p>You achieved a new Bingo!<br>You now have <b>{bingoCount}</b> Bingos.</p>
+      <button id="close-alert" class="close-btn">Close</button>
+    </div>
+  </div>
+
+  <div id="settings-background" class="overlay-background">
+    <div class="overlay-content settings-container">
+      <h2>Bingo Settings</h2>
+      <div class="flex-row-container">
+        <div class="flex-row-item settings-box">
+          <h3>Bingo Items</h3>
+          <div class="settings-element">
+            <p></p>
+            <textarea class="bingo-item-input" bind:value={inputText} placeholder="Enter items line by line" on:input={generateBingo}></textarea>
+          </div>
+        </div>
+        <div class="flex-row-item flex-column-container">
+          <div class="settings-box flex-column-item">
+            <h3>Bingo Dimensions</h3>
+            <div class="settings-element">
+              <label for="rows">Rows:</label>
+              <input class="bingo-dimension-input" id="rows" type="number" bind:value={rows} min="1" max="10" on:input={generateBingo} />
+            </div>
+            <div class="settings-element">
+              <label for="cols">Columns:</label>
+              <input class="bingo-dimension-input" id="cols" type="number" bind:value={cols} min="1" max="10" on:input={generateBingo} />
+            </div>
+          </div>
+          <div class="settings-box flex-column-item">
+            <h3>Display</h3>
+            <div class="settings-element">
+              <button on:click={toggleTheme}>Toggle Dark/Light Mode</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <button id="close-settings" class="close-btn">Save and Close</button>
+    </div>
+  </div>
+</body>

@@ -1,32 +1,107 @@
-.bingo-grid-container {
+:root {
+    --bg-color: #1b1b1d;
+    --content-bg-color: black;
+    --text-color: white;
+
+    --bingo-cell-border-color: #333;
+    --bingo-cell-bg-color: #1c1c1c;
+    --bingo-cell-bg-color-hover: #525252;
+    --bingo-cell-clicked-bg-color: #454545;
+
+    --button-bg-color: var(--text-color);
+    --button-color: var(--bg-color);
+    --button-bg-color-hover: var(--bingo-cell-bg-color-hover);
+
+    --warning-bg-color: rgb(132, 86, 0);
+
+    --overlay-bg-color: rgba(0, 0, 0, 0.7);
+    --overlay-content-bg-color: #1b1b1b;
+
+    --settings-bg-color: black;
+    --settings-element-bg-color: #1c1c1c;
+
+    --settings-input-bg-color: #1b1b1d;
+    --settings-input-text-color: white;
+    --settomgs-input-border-color: #333;
+
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='light'] {
+    --bg-color: white;
+    --content-bg-color: #f0f0f0;
+    --text-color: black;
+
+    --bingo-cell-border-color: #ccc;
+    --bingo-cell-bg-color: #f0f0f0;
+    --bingo-cell-bg-color-hover: #ccc;
+    --bingo-cell-clicked-bg-color: #aaa;
+
+    --button-bg-color: var(--bg-color);
+    --button-color: var(--text-color);
+    --button-bg-color-hover: #ccc;
+
+    --warning-bg-color: rgb(255, 204, 0);
+
+    --overlay-bg-color: rgba(255, 255, 255, 0.7);
+    --overlay-content-bg-color: #f0f0f0;
+
+    --settings-bg-color: #f0f0f0;
+    --settings-element-bg-color: #f0f0f0;
+
+    --settings-input-bg-color: #f0f0f0;
+    --settings-input-text-color: black;
+    --settomgs-input-border-color: #ccc;
+
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.bingo-container {
     display: flex;
+    margin: auto auto;
     flex-direction: column;
     align-items: center;
-    margin-top: 20px;
     padding: 20px;
-    border: 2px solid #333;
-    border-radius: 8px;
-    background-color: #f4f4f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 7px;
+    border-radius: 8px;}
+
+.bingo-main-container {
+    background-color: var(--content-bg-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.bingo-grid-container {
+    width: 95vw;
+    height: 94vh;
+    background-color: var(--content-bg-color);
 }
 
 .bingo-grid {
     display: grid;
     gap: 6px;
-    margin-bottom: 20px;
+    margin: auto;
 }
 
 .bingo-cell {
-    border: 1px solid #333;
-    width: 150px; /* Bigger size */
-    height: 150px; /* Bigger size */
+    border: 1px solid var(--bingo-cell-border-color);
+    width: 150px;
+    height: 150px;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 18px; /* Base font size */
-    background-color: #fff;
-    color: black;
+    font-size: 18px;
+    background-color: var(--bingo-cell-bg-color);
+    color: var(--text-color);
     border-radius: 4px;
     overflow: hidden;
     word-wrap: break-word;
@@ -34,57 +109,129 @@
     margin: 0;
 }
 
+.bingo-cell:hover, .bingo-cell.clicked:hover {
+    background-color: var(--bingo-cell-bg-color-hover);
+}
+
 .bingo-cell.clicked {
-    background-color: #add8e6; /* Highlight color for clicked state */
+    background-color: var(--bingo-cell-clicked-bg-color);
 }
 
 button {
-    margin-bottom: 30px;
     padding: 10px 20px;
     border: none;
-    background-color: #007bff;
-    color: #fff;
+    background-color: var(--button-bg-color);
+    color: var(--button-color);
     cursor: pointer;
     border-radius: 4px;
     font-size: 1em;
 }
 
 button:hover {
-    background-color: #0056b3;
+    color: var(--button-bg-color);
+    background-color: var(--button-bg-color-hover);
 }
 
 .bingo-running-warning {
-    /* Add your styles as needed */
+    width: 20vw;
     padding: 1rem;
     margin: 20px;
-    background-color: #f9f9f9;
-    border: 5px solid orange;
+    background-color: var(--warning-bg-color);
     border-radius: 10px;
-    /* center text and buttons */
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
-.alert-background {
-    display: none; /* Hidden by default */
-    position: fixed; /* Fixed position */
+.overlay-background {
+    display: none;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    background-color: rgba(0, 0, 0, 0.7); /* Dark background */
-    justify-content: center; /* Center the alert content */
-    align-items: center; /* Center the alert content */
-    z-index: 1000; /* Keep it on top */
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay-bg-color);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-.alert-content {
-    background-color: #fff;
+.overlay-content {
+    background-color: var(--overlay-content-bg-color);
     padding: 20px;
     border-radius: 8px;
-    width: 300px;
+    min-width: 300px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.settings-container {
+    width: 50%;
+}
+
+.flex-row-container {
+    display: flex;
+    width: 100%;
+}
+
+.flex-row-item {
+    width: 50%;
+}
+
+.flex-column-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.flex-column-item {
+    height: 50%;
+}
+
+.settings-box {
+    background-color: var(--content-bg-color);
+    margin: 10px;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.settings-element {
+    background-color: var(--settings-element-bg-color);
+    padding: 15px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+.bingo-item-input {
+    resize: none;
+    width: 90%;
+    height: 300px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--settings-input-bg-color);
+    color: var(--settings-input-text-color);
+    border: 1px solid var(--settings-input-border-color);
+    box-shadow: inset 0 0 10px var(--shadow-color);
+}
+
+.bingo-dimension-input {
+    width: 50px;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: var(--settings-input-bg-color);
+    color: var(--settings-input-text-color);
+    border: 1px solid var(--settings-input-border-color);
+    box-shadow: inset 0 0 10px var(--shadow-color);
+}
+
+.cookie-notice {
+    background-color: var(--bg-color);
+    padding: 15px;
+    margin: 10px;
+    margin-top: auto;
+    border-radius: 8px;
+    box-shadow: inset 0 4px 8px var(--shadow-color);
 }

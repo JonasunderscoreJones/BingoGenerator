@@ -102,12 +102,13 @@ body {
     display: grid;
     gap: 6px;
     margin: auto;
+    transition: transform 0.2s ease-in-out;
 }
 
 .bingo-cell {
     border: 1px solid var(--bingo-cell-border-color);
-    width: 150px;
-    height: 150px;
+    width: calc((100vh - 10rem)/5);
+    height: calc((100vh - 10rem)/5);
     display: flex;
     justify-content: center;
     align-items: center;

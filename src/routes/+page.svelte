@@ -226,17 +226,26 @@ Bingo Item 25`;
   }
 
   function triggerConfetti() {
-    // `party.confetti` can be used for screen-wide confetti
-    party.confetti(document.body, {
-      count: party.variation.range(50, 2000), // Number of confetti pieces
-      spread: 70, // Spread of confetti
-      size: party.variation.range(0.5, 1.5), // Size of confetti
-    });
+    if (theme === 'dark') {
+      // `party.confetti` can be used for screen-wide confetti
+      party.confetti(document.body, {
+        count: party.variation.range(50, 2000), // Number of confetti pieces
+        spread: 70, // Spread of confetti
+        size: party.variation.range(0.5, 1.5), // Size of confetti
+      });
+    } else {
+      // pink confetti
+      party.sparkles(document.body, {
+        count: party.variation.range(50, 10000), // Number of confetti pieces
+        speed: party.variation.range(500, 500), // Speed of confetti
+        size: party.variation.range(0.5, 1.5), // Size of confetti
+      });
+    }
   }
 
   // Toggle between dark and light themes
   function toggleTheme() {
-    theme = theme === 'dark' ? 'light' : 'dark';
+    theme = theme === 'dark' ? 'pink' : 'dark';
     document.documentElement.setAttribute('data-theme', theme);
     setThemeCookie(theme);
   }
@@ -301,6 +310,11 @@ Bingo Item 25`;
           <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
         {/if}
       </div>
+      {#if theme === 'pink'}
+      <div style="justify-content: center; flex-direction: column" class="notice-box">
+        <img src="/hello_barbie_bingo.png" width="80%" alt="Confetti" />
+      </div>
+      {/if}
       <div class="notice-box cookie-notice">
         <p>This Website uses functional Cookies to store the Running Bingo Game, Settings and the Entered Bingo Entries.<br><br>They can be deleted in the Settings.</p>
       </div>
@@ -336,6 +350,10 @@ Bingo Item 25`;
     <div class="overlay-content">
       <h2>Bingo!</h2>
       <p>You achieved a new Bingo!<br>You now have <b>{bingoCount}</b> Bingos.</p>
+      {#if theme === 'pink'}
+        <img src="/congrats_bingo.png" height="500vh" alt="Confetti" />
+        <br>
+      {/if}
       <button id="close-alert" class="close-btn">Close</button>
     </div>
   </div>
@@ -366,7 +384,7 @@ Bingo Item 25`;
           <div class="settings-box flex-column-item">
             <h3>Display</h3>
             <div class="settings-element">
-              <button on:click={toggleTheme}>Toggle Dark/Light Mode</button>
+              <button on:click={toggleTheme}>Toggle Dark/Lit Mode</button>
             </div>
           </div>
           <div class="settings-box flex-column-item">

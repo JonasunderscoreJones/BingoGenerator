@@ -23,7 +23,7 @@
 
     --settings-input-bg-color: #1b1b1d;
     --settings-input-text-color: white;
-    --settomgs-input-border-color: #333;
+    --settings-input-border-color: #333;
 
     --shadow-color: rgba(0, 0, 0, 0.3);
 }
@@ -53,9 +53,47 @@
 
     --settings-input-bg-color: #f0f0f0;
     --settings-input-text-color: black;
-    --settomgs-input-border-color: #ccc;
+    --settings-input-border-color: #ccc;
 
     --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='pink'] {
+    /* Pleasant Pink theme with good contrast */
+    --bg-color: #e0218a; /* A vibrant pink for the background */
+    --content-bg-color: #fddde6; /* A softer, light pink for content background */
+    --text-color: #e52b50; /* Black text for high contrast and readability */
+    --prompt-text-color: white; /* Black text for prompts */
+
+    --bingo-cell-border-color: #fb607f; /* A slightly darker pink for bingo cell borders */
+    --bingo-cell-bg-color: #ffc0cb; /* Light pink for the bingo cell background */
+    --bingo-cell-bg-color-hover: #e63e62; /* A medium pink for hover effect */
+    --bingo-cell-clicked-bg-color: #e0218a; /* Vibrant pink for clicked state */
+
+    --button-bg-color: #ffc0cb; /* Black buttons for strong contrast */
+    --button-color: var(--bg-color); /* Button text in vibrant pink */
+    --button-bg-color-hover: #e63e62; /* Hover effect in medium pink for buttons */
+
+    --warning-bg-color: rgb(255, 204, 0); /* A bright yellow for warnings (keeps visibility) */
+
+    --overlay-bg-color: rgba(255, 255, 255, 0.8); /* Slightly transparent white overlay */
+    --overlay-content-bg-color: #ffc0cb; /* Light pink background for overlay content */
+    --overlay-content-border-color: #e0218a; /* Vibrant pink for overlay borders */
+
+    --settings-bg-color: #e0218a; /* Vibrant pink for settings background */
+    --settings-element-bg-color: #ffc0cb; /* Light pink for settings element background */
+
+    --settings-input-bg-color: #fb607f; /* Medium pink for input background */
+    --settings-input-text-color: black; /* Black text for inputs */
+    --settings-input-border-color: #e63e62; /* Darker pink for input borders */
+
+    --shadow-color: rgba(0, 0, 0, 0.3); /* Subtle shadow to give depth */
+
+    body, button {
+        font-family: "Emilys Candy", serif;
+        font-weight: 400;
+        font-style: normal;
+    }
 }
 
 body {
@@ -129,6 +167,7 @@ body {
 
 .bingo-cell.clicked {
     background-color: var(--bingo-cell-clicked-bg-color);
+    color: var(--prompt-text-color);
 }
 
 button {
@@ -181,6 +220,7 @@ button:hover {
     border-radius: 8px;
     min-width: 300px;
     text-align: center;
+    justify-content: center;
     box-shadow: 0 4px 8px var(--shadow-color);
     border: 2px solid var(--overlay-content-border-color);
 }
@@ -255,6 +295,7 @@ button:hover {
     padding: 15px;
     margin: 10px;
     border-radius: 8px;
+    color: var(--prompt-text-color);
     box-shadow: inset 0 4px 8px var(--shadow-color);
 }
 
@@ -276,8 +317,10 @@ button:hover {
     text-align: center;
     margin-top: auto;
     margin-bottom: auto;
+    color: var(--prompt-text-color);
 }
 
 .cookie-notice {
     margin-top: auto;
+    color: var(--prompt-text-color);
 }

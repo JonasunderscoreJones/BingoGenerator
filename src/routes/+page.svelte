@@ -262,26 +262,26 @@ Bingo Item 25`;
     <h1>Randomized Bingo Generator</h1>
     <div style="margin-bottom: 10px;">
     </div>
-    <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
-    <div>
-      <button on:click={generateBingo}>Regenerate Bingo</button>
-      <button on:click={downloadPDF}>Download as PDF</button>
-      <button on:click={openSettings}>Configure Bingo</button>
-    </div>
-    {#if running_bingo && tried_to_regen}
-      <div class="bingo-running-warning">
-        <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
-        <button style="background-color: darkred;" on:click={resetBingo}>Stop Bingo and Regenerate</button>
+    <div class="notice-box">
+      <div class="button-container">
+        <button on:click={generateBingo}>Regenerate Bingo</button>
+        <button on:click={downloadPDF}>Download as PDF</button>
+        <button on:click={openSettings}>Configure Bingo</button>
       </div>
-    {/if}
-    {#if running_bingo && !tried_to_regen}
-      <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
-    {/if}
-    <div class="settings-element cookie-notice">
+      {#if running_bingo && tried_to_regen}
+        <div class="bingo-running-warning">
+          <p>You are currently playing this game of Bingo and it therefore doesn't Refresh changes or Regenerate the table. If you would like to End the Game, Click the Button below.</p>
+          <button on:click={resetBingo}>Stop Bingo and Regenerate</button>
+        </div>
+      {/if}
+      {#if running_bingo && !tried_to_regen}
+        <i style="margin-bottom: 10px;">A game is currently running. Changes made to the configuration are not being updated to the grid.</i>
+      {/if}
+    </div>
+    <div class="notice-box cookie-notice">
       <p>Notice: This Website uses functional Cookies to store the Running Bingo Game as well as the Entered Bingo Entries.</p>
     </div>
   </div>
-
   <div class="bingo-container bingo-grid-container">
     {#if grid.length > 0}
     <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
@@ -320,7 +320,7 @@ Bingo Item 25`;
         <div class="flex-row-item settings-box">
           <h3>Bingo Items</h3>
           <div class="settings-element">
-            <p></p>
+            <p>NOTE: If there are more lines than Bingo cells, not all Items will be in the Bingo. The selection is still randomized.</p>
             <textarea class="bingo-item-input" bind:value={inputText} placeholder="Enter items line by line" on:input={generateBingo}></textarea>
           </div>
         </div>

@@ -92,3 +92,44 @@ export function deleteSavedGridCookie(cookieName = 'bingoGrid') {
     document.cookie = `${cookieName}=;path=/;max-age=0`;
     deleteGameLockCookie();
 }
+
+/**
+ * Functions to add the Page-Theme cookie
+ * @module cookies
+ */
+export function setThemeCookie(pageTheme) {
+    document.cookie = `pageTheme=${pageTheme};path=/;max-age=31536000`; // Cookie lasts for 1 year
+}
+
+/**
+ * Function to check if the Page-Theme cookie is present
+ * @returns {String} The Theme from the cookie
+ */
+export function getThemeCookie() {
+    const cookies = document.cookie.split('; ');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.split('=');
+        if (name === 'pageTheme') {
+            return decodeURIComponent(value);
+        }
+    }
+    return ""; // if the cookie is not found
+}
+
+/**
+ * Function to delete the Page-Theme cookie
+ */
+export function deleteThemeCookie() {
+    document.cookie = `pageTheme=;path=/;max-age=0`;
+}
+
+/**
+ * Delete all cookies and reload page
+ */
+export function deleteAllCookies() {
+    deleteSavedEntriesCookie();
+    deleteSavedGridCookie();
+    deleteGameLockCookie();
+    deleteThemeCookie();
+    window.location.reload();
+}

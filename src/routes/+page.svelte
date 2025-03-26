@@ -284,21 +284,26 @@ Bingo Item 25`;
   </div>
   <div class="bingo-container bingo-grid-container">
     {#if grid.length > 0}
-    <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
-      {#each grid as row}
-        {#each row as cell}
-          <button class="bingo-cell"
-          on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
-          on:keydown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
-              cell.clicked = !cell.clicked;
-              cellClicked();
-            }
-          }}
-          class:clicked={cell.clicked}
-          >{cell.value}</button>
+      <div class="bingo-grid" style="grid-template-columns: repeat({cols}, 1fr);">
+        {#each grid as row}
+          {#each row as cell}
+            <button class="bingo-cell"
+            on:click={() => { cell.clicked = !cell.clicked; cellClicked(); }}
+            on:keydown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') { // Handle Enter or Space key
+                cell.clicked = !cell.clicked;
+                cellClicked();
+              }
+            }}
+            class:clicked={cell.clicked}
+            >{cell.value}</button>
+          {/each}
         {/each}
-      {/each}
+      </div>
+    {:else}
+    <div class="centered-notice notice-box">
+      <p>Click the Button to generate a new Bingo</p>
+      <button on:click={generateBingo}>Generate Bingo</button>
     </div>
     {/if}
   </div>

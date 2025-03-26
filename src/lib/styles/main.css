@@ -257,6 +257,15 @@ button:hover {
     margin: 0 10px;
 }
 
+.centered-notice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
 .cookie-notice {
     margin-top: auto;
 }

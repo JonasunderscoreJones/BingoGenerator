@@ -95,7 +95,7 @@ export function deleteSavedGridCookie(cookieName = 'bingoGrid') {
 
 /**
  * Functions to add the Page-Theme cookie
- * @module cookies
+ * @param {String} pageTheme The theme to set
  */
 export function setThemeCookie(pageTheme) {
     document.cookie = `pageTheme=${pageTheme};path=/;max-age=31536000`; // Cookie lasts for 1 year

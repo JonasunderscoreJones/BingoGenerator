@@ -6,7 +6,7 @@
   import jsPDF from 'jspdf';
   import { page } from '$app/stores';
   import party from "party-js";
-  import { getGridFromCookie, saveGridAsCookie, getEntriesFromCookie, saveEntriesAsCookie, deleteSavedGridCookie, isGameLockCookiePresent, addGameLockCookie, deleteGameLockCookie, deleteAllCookies } from '$lib/cookies.js';
+  import { getGridFromCookie, saveGridAsCookie, getEntriesFromCookie, saveEntriesAsCookie, deleteSavedGridCookie, isGameLockCookiePresent, addGameLockCookie, deleteGameLockCookie, deleteAllCookies, setThemeCookie, getThemeCookie } from '$lib/cookies.js';
 
   $: queryParams = $page.url.searchParams;
   $: bingocode = queryParams.get('bingo');
@@ -226,12 +226,18 @@ Bingo Item 25`;
   function toggleTheme() {
     theme = theme === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', theme);
+    setThemeCookie(theme);
   }
 
   onMount(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    theme = prefersDark ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', theme);
+    if (getThemeCookie()) {
+      theme = getThemeCookie();
+      document.documentElement.setAttribute('data-theme', theme);
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      theme = prefersDark ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    }
 
     const savedGrid = getGridFromCookie();
     const savedEntries = getEntriesFromCookie();

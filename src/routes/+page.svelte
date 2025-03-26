@@ -6,7 +6,19 @@
   import jsPDF from 'jspdf';
   import { page } from '$app/stores';
   import party from "party-js";
-  import { getGridFromCookie, saveGridAsCookie, getEntriesFromCookie, saveEntriesAsCookie, deleteSavedGridCookie, isGameLockCookiePresent, addGameLockCookie, deleteGameLockCookie, deleteAllCookies, setThemeCookie, getThemeCookie } from '$lib/cookies.js';
+  import {
+    getGridFromCookie,
+    saveGridAsCookie,
+    getEntriesFromCookie,
+    saveEntriesAsCookie,
+    deleteSavedGridCookie,
+    isGameLockCookiePresent,
+    addGameLockCookie,
+    deleteGameLockCookie,
+    deleteAllCookies,
+    setThemeCookie,
+    getThemeCookie
+  } from '$lib/scripts/cookies.js';
 
   $: queryParams = $page.url.searchParams;
   $: bingocode = queryParams.get('bingo');

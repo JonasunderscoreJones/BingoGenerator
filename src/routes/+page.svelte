@@ -349,7 +349,7 @@ Bingo Item 25`;
   <div id="alert-background" class="overlay-background">
     <div class="overlay-content">
       <h2>Bingo!</h2>
-      <p>You achieved a new Bingo!<br>You now have <b>{bingoCount}</b> Bingos.</p>
+      <p>You achieved a new Bingo!<br>You now have <b>{bingoCount}</b> Bingo{#if bingoCount != 1}s{/if}.</p>
       {#if theme === 'pink'}
         <img src="/congrats_bingo.png" height="500vh" alt="Confetti" />
         <br>

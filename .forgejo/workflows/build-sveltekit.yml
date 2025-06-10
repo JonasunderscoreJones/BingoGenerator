@@ -19,21 +19,19 @@ jobs:
           path: |
             ~/.npm
             node_modules
-          key: ${{ runner.os }}-SvelteKit
+          key: ${{ runner.os }}-SvelteKit-${{ hashFiles('package-lock.json') }}
 
       - name: install dependencies
         run: npm install --frozen-lockfile
 
       - name: build project
-        run: npm run build || true
+        run: npm run build
 
       - name: capture build artifacts
         uses: https://code.forgejo.org/forgejo/upload-artifact@v4
         with:
-          name: sveltekit-artifacts.zip
-          path: |
-            build/
-            .svelte-kit/
+          name: sveltekit-artifacts
+          path: build/
           if-no-files-found: error
 
       - name: cache downloaded dependencies
@@ -43,4 +41,4 @@ jobs:
           path: |
             ~/.npm
             node_modules
-          key: ${{ runner.os }}-SvelteKit
+          key: ${{ runner.os }}-SvelteKit-${{ hashFiles('package-lock.json') }}

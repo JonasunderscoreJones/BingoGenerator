@@ -31,7 +31,7 @@ jobs:
         uses: https://code.forgejo.org/forgejo/upload-artifact@v4
         with:
           name: sveltekit-artifacts
-          path: build/
+          path: .svelte-kit/output/
           if-no-files-found: error
 
       - name: cache downloaded dependencies

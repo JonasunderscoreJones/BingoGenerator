@@ -60,6 +60,45 @@
 
 [data-theme='pink'] {
     /* Pleasant Pink theme with good contrast */
+    --bg-color: #FA81FA; /* A vibrant pink for the background */
+    --content-bg-color: #ECA2FF; /* A softer, light pink for content background */
+    --text-color: #C88EFF; /* Black text for high contrast and readability */
+    --prompt-text-color: white; /* Black text for prompts */
+
+    --bingo-cell-border-color: #fb607f; /* A slightly darker pink for bingo cell borders */
+    --bingo-cell-bg-color: #FFD2F5; /* Light pink for the bingo cell background */
+    --bingo-cell-bg-color-hover: #C88EFF; /* A medium pink for hover effect */
+    --bingo-cell-clicked-bg-color: #EBC0F9; /* Vibrant pink for clicked state */
+
+    --button-bg-color: #FAB0FA; /* Black buttons for strong contrast */
+    --button-color: white; /* Button text in vibrant pink */
+    --button-bg-color-hover: #EBC0F9; /* Hover effect in medium pink for buttons */
+
+    --warning-bg-color: rgb(255, 204, 0); /* A bright yellow for warnings (keeps visibility) */
+
+    --overlay-bg-color: rgba(255, 255, 255, 0.8); /* Slightly transparent white overlay */
+    --overlay-content-bg-color: #ffc0cb; /* Light pink background for overlay content */
+    --overlay-content-border-color: #e0218a; /* Vibrant pink for overlay borders */
+
+    --settings-bg-color: #e0218a; /* Vibrant pink for settings background */
+    --settings-element-bg-color: #ffc0cb; /* Light pink for settings element background */
+
+    --settings-input-bg-color: #fb607f; /* Medium pink for input background */
+    --settings-input-text-color: black; /* Black text for inputs */
+    --settings-input-border-color: #e63e62; /* Darker pink for input borders */
+
+    --shadow-color: rgba(0, 0, 0, 0.3); /* Subtle shadow to give depth */
+
+    body, button {
+        font-family: "Emilys Candy", serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+}
+
+
+[data-theme='pink_old'] {
+    /* Pleasant Pink theme with good contrast */
     --bg-color: #e0218a; /* A vibrant pink for the background */
     --content-bg-color: #fddde6; /* A softer, light pink for content background */
     --text-color: #e52b50; /* Black text for high contrast and readability */
@@ -155,10 +194,12 @@ body {
     background-color: var(--bingo-cell-bg-color);
     color: var(--text-color);
     border-radius: 4px;
-    overflow: hidden;
+    overflow-x: hidden;
     word-wrap: break-word;
     cursor: pointer;
     margin: 0;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .bingo-cell:hover, .bingo-cell.clicked:hover {

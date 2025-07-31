@@ -190,7 +190,7 @@ Bingo Item 25`;
       while (cell.scrollHeight > cell.clientHeight || cell.scrollWidth > cell.clientWidth) {
         fontSize--;
         cell.style.fontSize = `${fontSize}px`;
-        if (fontSize < 8) break; // Minimum font size limit
+        if (fontSize < 12) break; // Minimum font size limit
       }
     });
   }

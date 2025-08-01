@@ -190,8 +190,14 @@ Bingo Item 25`;
       while (cell.scrollHeight > cell.clientHeight || cell.scrollWidth > cell.clientWidth) {
         fontSize--;
         cell.style.fontSize = `${fontSize}px`;
-        if (fontSize < 12) break; // Minimum font size limit
-      }
+        if (fontSize < 10) break; // Minimum font size limit
+      };
+      fontSize -= 2; // Reduce font size a bit more for better fit
+      fontSize = Math.max(fontSize, 8); // Ensure font size doesn't go below 8px
+      cell.style.fontSize = `${fontSize}px`;
+      // apply wrapping after font adjustment
+      cell.style.wordBreak = 'break-word';
+      cell.style.overflowWrap = 'break-word';
     });
   }
 

@@ -322,7 +322,7 @@ Bingo Item 25`;
       </div>
       {/if}
       <div class="notice-box cookie-notice">
-        <p>This Website uses functional Cookies to store the Running Bingo Game, Settings and the Entered Bingo Entries.<br><br>They can be deleted in the Settings.</p>
+        <p>This Website uses functional Cookies to store the Running Game, Settings and the Bingo Entries.<br><br>They can be deleted in the Settings.</p>
       </div>
     </div>
     <div class="bingo-container bingo-grid-container">
